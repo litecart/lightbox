@@ -157,11 +157,11 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
     },
     navigate: function(event) {
       event = event || window.event;
-      if (event.keyCode === 39 || event.keyCode === 37) {
-        if (event.keyCode === 39) {
-          return this.navigate_right();
-        } else if (event.keyCode === 37) {
+      if (event.keyCode === 37 || event.keyCode === 39) {
+        if (event.keyCode === 37) {
           return this.navigate_left();
+        } else if (event.keyCode === 39) {
+          return this.navigate_right();
         }
       }
     },
@@ -214,18 +214,18 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
       if (type === 'image' || this.isImage(src)) {
         this.options.type = 'image';
         return this.preloadImage(src, true);
-      } else if (type === 'youtube' || (video_id = this.getYoutubeId(src))) {
-        this.options.type = 'youtube';
-        return this.showYoutubeVideo(video_id);
-      } else if (type === 'vimeo' || (video_id = this.getVimeoId(src))) {
-        this.options.type = 'vimeo';
-        return this.showVimeoVideo(video_id);
       } else if (type === 'instagram' || (video_id = this.getInstagramId(src))) {
         this.options.type = 'instagram';
         return this.showInstagramVideo(video_id);
       } else if (type === 'video') {
         this.options.type = 'video';
         return this.showVideoIframe(video_id);
+      } else if (type === 'vimeo' || (video_id = this.getVimeoId(src))) {
+        this.options.type = 'vimeo';
+        return this.showVimeoVideo(video_id);
+      } else if (type === 'youtube' || (video_id = this.getYoutubeId(src))) {
+        this.options.type = 'youtube';
+        return this.showYoutubeVideo(video_id);
       } else {
         this.options.type = 'url';
         return this.loadRemoteContent(src);
@@ -253,6 +253,33 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
       this.lightbox_body.html('<div class="modal-loading">' + this.options.loadingMessage + '</div>');
       return this;
     },
+    showInstagramVideo: function(id) {
+      var height, width;
+      width = this.checkDimensions(this.$element.data('width') || 612);
+      this.resize(width);
+      height = width + 80;
+      this.lightbox_body.html('<iframe width="' + width + '" height="' + height + '" src="' + this.addTrailingSlash(id) + 'embed/" frameborder="0" allowfullscreen></iframe>');
+      this.options.onContentLoaded.call(this);
+      if (this.modal_arrows) {
+        return this.lightbox_container.find('.modal-control').css('display', 'none');
+      }
+    },
+    showVimeoVideo: function(id) {
+      var height, width;
+      width = this.checkDimensions(this.$element.data('width') || 560);
+      height = width / (500 / 281);
+      return this.showVideoIframe(id + '?autoplay=1', width, height);
+    },
+    showVideoIframe: function(url, width, height) {
+      height = height || width;
+      this.resize(width);
+      this.lightbox_body.html('<div class="embed-responsive embed-responsive-16by9"><iframe width="' + width + '" height="' + height + '" src="' + url + '" frameborder="0" allowfullscreen class="embed-responsive-item"></iframe></div>');
+      this.options.onContentLoaded.call(this);
+      if (this.modal_arrows) {
+        this.lightbox_container.find('.modal-control').css('display', 'none');
+      }
+      return this;
+    },
     showYoutubeVideo: function(id) {
       var height, rel, width;
       if ((this.$element.attr('data-norelated') != null) || this.options.no_related) {
@@ -263,33 +290,6 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
       width = this.checkDimensions(this.$element.data('width') || 560);
       height = width / (560 / 315);
       return this.showVideoIframe('//www.youtube.com/embed/' + id + '?badge=0&autoplay=1&html5=1' + rel, width, height);
-    },
-    showVimeoVideo: function(id) {
-      var height, width;
-      width = this.checkDimensions(this.$element.data('width') || 560);
-      height = width / (500 / 281);
-      return this.showVideoIframe(id + '?autoplay=1', width, height);
-    },
-    showInstagramVideo: function(id) {
-      var height, width;
-      width = this.checkDimensions(this.$element.data('width') || 612);
-      this.resize(width);
-      height = width + 80;
-      this.lightbox_body.html('<iframe width="' + width + '" height="' + height + '" src="' + this.addTrailingSlash(id) + 'embed/" frameborder="0" allowfullscreen></iframe>');
-      this.options.onContentLoaded.call(this);
-      if (this.modal_arrows) {
-        return this.modal_arrows.css('display', 'none');
-      }
-    },
-    showVideoIframe: function(url, width, height) {
-      height = height || width;
-      this.resize(width);
-      this.lightbox_body.html('<div class="embed-responsive embed-responsive-16by9"><iframe width="' + width + '" height="' + height + '" src="' + url + '" frameborder="0" allowfullscreen class="embed-responsive-item"></iframe></div>');
-      this.options.onContentLoaded.call(this);
-      if (this.modal_arrows) {
-        this.modal_arrows.css('display', 'none');
-      }
-      return this;
     },
     loadRemoteContent: function(url) {
       var disableExternalCheck, width;
@@ -307,7 +307,7 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
         this.options.onContentLoaded.call(this);
       }
       if (this.modal_arrows) {
-        this.modal_arrows.css('display', 'none');
+        this.lightbox_container.find('.modal-control').css('display', 'none');
       }
       return this;
     },
