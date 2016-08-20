@@ -57,8 +57,10 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
         if (_this.gallery) {
           $(document).off('keydown.ekkoLightbox');
         }
+        $('body .modal').eq(-2).find('.modal-dialog').removeClass('aside');
         _this.modal.remove();
-        return _this.options.onHidden.call(_this);
+        _this.options.onHidden.call(_this);
+        $('.modal:visible').length && $(document.body).addClass('modal-open');
       };
     })(this)).modal('show', options);
     return this.modal;
