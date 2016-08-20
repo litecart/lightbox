@@ -2,7 +2,6 @@
 /*
 Lightbox for Bootstrap 3 by @ashleydw
 https://github.com/ashleydw/lightbox
-
 License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
  */
 
@@ -83,15 +82,15 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
           this.gallery_index = this.gallery_items.index(this.$element);
           $(document).on('keydown.ekkoLightbox', this.navigate.bind(this));
           if (this.options.directional_arrows && this.gallery_items.length > 1) {
-            this.lightbox_container.append('<div class="ekko-lightbox-nav-overlay"><a href="#" class="' + this.strip_stops(this.options.left_arrow_class) + '"></a><a href="#" class="' + this.strip_stops(this.options.right_arrow_class) + '"></a></div>');
-            this.modal_arrows = this.lightbox_container.find('div.ekko-lightbox-nav-overlay').first();
-            this.lightbox_container.find('a' + this.strip_spaces(this.options.left_arrow_class)).on('click', (function(_this) {
+            this.modal_arrows = '<a href="#" class="modal-control arrow-left">' + this.options.left_arrow + '</a><a href="#" class="modal-control arrow-right">' + this.options.right_arrow + '</a>';
+            this.lightbox_container.append(this.modal_arrows);
+            this.lightbox_container.find('a.arrow-left').on('click', (function(_this) {
               return function(event) {
                 event.preventDefault();
                 return _this.navigate_left();
               };
             })(this));
-            this.lightbox_container.find('a' + this.strip_spaces(this.options.right_arrow_class)).on('click', (function(_this) {
+            this.lightbox_container.find('a.arrow-right').on('click', (function(_this) {
               return function(event) {
                 event.preventDefault();
                 return _this.navigate_right();
@@ -342,7 +341,7 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
             image.addClass('img-responsive');
             _this.lightbox_body.html(image);
             if (_this.modal_arrows) {
-              _this.modal_arrows.css('display', 'block');
+              _this.lightbox_container.find('.modal-control').css('display', 'block');
             }
             return image.load(function() {
               if (_this.options.scale_height) {
@@ -382,7 +381,11 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
     },
     resize: function(width) {
       var width_total;
-      width_total = width + this.border.left + this.padding.left + this.padding.right + this.border.right;
+      if (this.options.left_arrow) {
+        width_total = this.options.max_width;
+      } else {
+        width_total = width + this.border.left + this.padding.left + this.padding.right + this.border.right;
+      }
       this.modal_dialog.css('width', 'auto').css('max-width', width_total);
       this.lightbox_container.find('a').css('line-height', function() {
         return $(this).parent().height() + 'px';
@@ -422,8 +425,9 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
 
   $.fn.ekkoLightbox.defaults = {
     gallery_parent_selector: 'document.body',
-    left_arrow_class: '.glyphicon .glyphicon-chevron-left',
-    right_arrow_class: '.glyphicon .glyphicon-chevron-right',
+    left_arrow: '<span class="glyphicon glyphicon-chevron-left"></span>',
+    right_arrow: '<span class="glyphicon glyphicon-chevron-right"></span>',
+    effect_class: 'fade',
     directional_arrows: true,
     type: null,
     always_show_close: true,
@@ -437,7 +441,6 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
     onNavigate: function() {},
     onContentLoaded: function() {}
   };
-
 }).call(this);
 
 // Scroll fix
