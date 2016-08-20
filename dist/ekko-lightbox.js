@@ -13,6 +13,7 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
   $ = jQuery;
 
   EkkoLightbox = function(element, options) {
+    $('.modal-dialog').addClass('aside');
     var content, footer, header;
     this.options = $.extend({
       title: null,
@@ -396,9 +397,6 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
         width = this.modal_body.width();
       }
       return width;
-    },
-    close: function() {
-      return this.modal.modal('hide');
     },
     addTrailingSlash: function(url) {
       if (url.substr(-1) !== '/') {
