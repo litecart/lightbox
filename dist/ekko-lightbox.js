@@ -219,7 +219,7 @@ License: https://github.com/ashleydw/lightbox/blob/master/LICENSE
         return this.showInstagramVideo(video_id);
       } else if (type === 'video') {
         this.options.type = 'video';
-        return this.showVideoIframe(video_id);
+        return this.showVideoIframe(src);
       } else if (type === 'vimeo' || (video_id = this.getVimeoId(src))) {
         this.options.type = 'vimeo';
         return this.showVimeoVideo(video_id);
